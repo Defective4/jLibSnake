@@ -29,5 +29,7 @@ public class Sprites {
 
     public static final byte TAIL_UP = 15;
 
+    public static final byte WALL = 99;
+
     private Sprites() {}
 }

@@ -28,9 +28,10 @@ public class Main {
             e.printStackTrace();
             return;
         }
-        LibSnake snake = new LibSnake(24, 24);
+        LibSnake snake = new LibSnake(84 / 2, 48 / 2);
         snake.putRandomPoint();
         snake.addListener(new GameAdapter() {
+
             @Override
             public boolean collectedPoint(boolean consumePoint) {
                 snake.putRandomPoint();
@@ -62,7 +63,7 @@ public class Main {
                 }
             }
         };
-        snakePanel.setPreferredSize(new Dimension(24 * 16, 24 * 16));
+        snakePanel.setPreferredSize(new Dimension(84 / 2 * 16, 48 / 2 * 16));
         win.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

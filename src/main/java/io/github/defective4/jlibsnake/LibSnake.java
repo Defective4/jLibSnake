@@ -20,11 +20,13 @@ public class LibSnake {
     private final List<Point> points = new ArrayList<>();
     private final Random rand = new Random();
     private final Snake snek;
+    private byte[][] walls;
     private final int width, height;
 
     public LibSnake(int width, int height) {
         this.width = width;
         this.height = height;
+        setMaze(initByteField(width, height));
         directions = initByteField(width, height);
         snek = new Snake(width / 2, height / 2, this);
         snek.appendSegments(2);
@@ -88,6 +90,8 @@ public class LibSnake {
             board[segment.getX()][segment.getY()] = spr;
         }
         for (Point pt : points) board[pt.getX()][pt.getY()] = POINT;
+        for (int i = 0; i < walls.length; i++)
+            for (int j = 0; j < walls[0].length; j++) if (walls[i][j] != 0) board[i][j] = WALL;
         return board;
     }
 
@@ -97,6 +101,10 @@ public class LibSnake {
 
     public List<GameListener> getListeners() {
         return Collections.unmodifiableList(listeners);
+    }
+
+    public byte[][] getMaze() {
+        return walls;
     }
 
     public Snake getSnake() {
@@ -119,8 +127,9 @@ public class LibSnake {
     }
 
     public boolean isFree(int x, int y) {
-        if (hasPointAt(x, y) || (x == snek.getX() && y == snek.getY())) return false;
+        if (hasPointAt(x, y) || x == snek.getX() && y == snek.getY()) return false;
         for (Segment s : snek.getSegments()) if (s.getX() == x && s.getY() == y) return false;
+        if (walls[x][y] != 0) return false;
         return true;
     }
 
@@ -160,6 +169,10 @@ public class LibSnake {
             for (GameListener ls : listeners) ls.crashedIntoTail();
             return;
         }
+        if (walls[snek.getX()][snek.getY()] != 0) {
+            for (GameListener ls : listeners) ls.crashedIntoWall();
+            return;
+        }
     }
 
     public void putPoint(int x, int y) {
@@ -182,6 +195,12 @@ public class LibSnake {
 
     public boolean removeListener(GameListener listener) {
         return listeners.remove(listener);
+    }
+
+    public void setMaze(byte[][] maze) {
+        if (maze.length != width || maze[0].length != height)
+            throw new IllegalArgumentException("maze width and height must be equal to board size");
+        walls = maze;
     }
 
     public void storeDirection(int x, int y, byte dir) {

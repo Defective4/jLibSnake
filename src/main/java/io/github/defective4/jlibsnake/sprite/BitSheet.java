@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public class BitSheet {
         spriteMap.put(TAIL_DOWN, getSpriteAt(8, 2));
 
         spriteMap.put(POINT, getSpriteAt(5, 2));
+
+        byte[][] wall = new byte[4][4];
+        for (int x = 0; x < 4; x++) for (int y = 0; y < 4; y++) wall[x][y] = 1;
+        spriteMap.put(WALL, wall);
     }
 
     public void dump(File pngFile) throws IOException {
@@ -63,6 +68,16 @@ public class BitSheet {
         byte[][] sprite = new byte[4][4];
         for (int x = 0; x < 4; x++) for (int y = 0; y < 4; y++) sprite[x][y] = map[sqX * 4 + x][sqY * 4 + y];
         return sprite;
+    }
+
+    public static byte[][] loadMaze(InputStream source) throws IOException {
+        BufferedImage mazeImage = ImageIO.read(source);
+        byte[][] maze = new byte[mazeImage.getWidth()][mazeImage.getHeight()];
+        int black = Color.black.getRGB();
+        for (int x = 0; x < mazeImage.getWidth(); x++) for (int y = 0; y < mazeImage.getHeight(); y++) {
+            maze[x][y] = (byte) (mazeImage.getRGB(x, y) == black ? 1 : 0);
+        }
+        return maze;
     }
 
     public static BufferedImage toImage(byte[][] sprite) {

@@ -4,4 +4,6 @@ public interface GameListener {
     boolean collectedPoint(boolean consumePoint);
 
     void crashedIntoTail();
+
+    void crashedIntoWall();
 }

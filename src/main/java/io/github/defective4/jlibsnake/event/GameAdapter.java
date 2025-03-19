@@ -10,4 +10,7 @@ public abstract class GameAdapter implements GameListener {
     @Override
     public void crashedIntoTail() {}
 
+    @Override
+    public void crashedIntoWall() {}
+
 }
